@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\STM32KeilPrj.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\STM32KeilPrj.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Jan 14 15:27:24 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Thu Jan 15 11:30:22 2026
 <BR><P>
 <H3>Maximum Stack Usage =        188 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -698,7 +698,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ECG_Task
 </UL>
 
-<P><STRONG><a name="[b1]"></a>ECG_Filter_IIR</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, filter.o(i.ECG_Filter_IIR))
+<P><STRONG><a name="[b1]"></a>ECG_Filter_IIR</STRONG> (Thumb, 54 bytes, Stack size 8 bytes, filter.o(i.ECG_Filter_IIR))
 <BR><BR>[Stack]<UL><LI>Max Depth = 164<LI>Call Chain = ECG_Filter_IIR &rArr; arm_biquad_cascade_df1_f32 &rArr; __aeabi_fadd &rArr; _float_epilogue
 </UL>
 <BR>[Calls]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_biquad_cascade_df1_f32
@@ -741,7 +741,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ECG_HeartRate_Calculate
 </UL>
 
-<P><STRONG><a name="[ba]"></a>ECG_HR_FindReference</STRONG> (Thumb, 78 bytes, Stack size 32 bytes, ecg_heartrate_calculate.o(i.ECG_HR_FindReference))
+<P><STRONG><a name="[ba]"></a>ECG_HR_FindReference</STRONG> (Thumb, 80 bytes, Stack size 32 bytes, ecg_heartrate_calculate.o(i.ECG_HR_FindReference))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = ECG_HR_FindReference &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cfrcmple
@@ -793,7 +793,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ProcKeyDownKey1
 </UL>
 
-<P><STRONG><a name="[c1]"></a>ECG_Task</STRONG> (Thumb, 134 bytes, Stack size 8 bytes, ecg.o(i.ECG_Task))
+<P><STRONG><a name="[c1]"></a>ECG_Task</STRONG> (Thumb, 136 bytes, Stack size 8 bytes, ecg.o(i.ECG_Task))
 <BR><BR>[Stack]<UL><LI>Max Depth = 180<LI>Call Chain = ECG_Task &rArr; ECG_Filter &rArr; ECG_Filter_IIR &rArr; arm_biquad_cascade_df1_f32 &rArr; __aeabi_fadd &rArr; _float_epilogue
 </UL>
 <BR>[Calls]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ECG_HeartRate_Calculate
@@ -904,7 +904,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitHardware
 </UL>
 
-<P><STRONG><a name="[c8]"></a>InitFilter</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, filter.o(i.InitFilter))
+<P><STRONG><a name="[c8]"></a>InitFilter</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, filter.o(i.InitFilter))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = InitFilter &rArr; arm_biquad_cascade_df1_init_f32
 </UL>
 <BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_biquad_cascade_df1_init_f32

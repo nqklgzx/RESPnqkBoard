@@ -39,33 +39,29 @@
 /*********************************************************************************************************
 *                                              内部变量
 *********************************************************************************************************/
-u8 ECG_Filter_Flag='1';    //默认无滤波
+u8 ECG_Filter_Flag='1';    //默认有滤波
 
 static arm_biquad_casd_df1_inst_f32 ECG_Filter_chebyshev_ii_inst;
-const uint8_t ECG_Filter_chebyshev_ii_STAGES = 8;
+const uint8_t ECG_Filter_chebyshev_ii_STAGES = 2;
+static float32_t ECG_Filter_chebyshev_ii_state[ECG_Filter_chebyshev_ii_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
 const float32_t ECG_Filter_chebyshev_ii_Coeffs[5 * ECG_Filter_chebyshev_ii_STAGES] = {  // 2级滤波器，每级5个系数
-1 , 0 , -1 , 1.999193192070595870291072060354053974152 , -0.999350303553046215299104915175121277571,
-1 , 0 , -1 , 1.99989848169756045948020073410589247942 , -0.999902051511476042122694707359187304974,
-1 , 0 , -1 , 1.998086844338334167048287781653925776482 , -0.998211553866139356117059833195526152849,
-1 , 0 , -1 , 1.99965586599998790262588954647071659565 , -0.999660360268349368340068394900299608707,
-1 , 0 , -1 , 1.997487091540172787773599338834173977375 , -0.997564164787804519285430160380201414227,
-1 , 0 , -1 , 1.99924439405912712786062002123799175024 , -0.999251662300130516491947219037683680654,
-1 , 0 , -1 , 1.997679465277921062593691203801427036524 , -0.997716180737348357077109994861530140042,
-1 , 0 , -1 , 1.998512408972447307320408071973361074924 , -0.998527662255880410491215570800704881549
+1 , 0 , -1 , 1.976815306010364592381733928050380200148 , -0.977126517775271152821403575217118486762,
+1 , 0 , -1 , 1.998258728739039646882247325265780091286 , -0.998260509412088437031229659623932093382
 };
 //IIR陷波器增益
-static float  ECG_Filter_chebyshev_ii_NotchInc = 
-                               0.00532401803196589848421460544614092214f *
-                               0.00532401803196589848421460544614092214f *
-                               0.004540455351295338837225301631406182423f *
-                               0.004540455351295338837225301631406182423f *
-                               0.003115606213413680755652812592870759545f *
-                               0.003115606213413680755652812592870759545f *
-                               0.001414335492672964995908291285786617664f *
-                               0.001414335492672964995908291285786617664f *
-                               0.891250938133745562730325673328479751945f; 
+static float  ECG_Filter_chebyshev_ii_NotchInc = 0.008742140415356791302570194091003941139f * 0.008742140415356791302570194091003941139f; 
 
-static float32_t ecg_bp_state[ECG_Filter_chebyshev_ii_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
+static arm_biquad_casd_df1_inst_f32 ECG_Filter_butterworth_inst;
+const uint8_t ECG_Filter_butterworth_STAGES = 2;
+static float32_t ECG_Filter_butterworth_state[ECG_Filter_butterworth_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
+const float32_t ECG_Filter_butterworth_Coeffs[5 * ECG_Filter_butterworth_STAGES] = {  // 2级滤波器，每级5个系数
+1 , -1.999999986521225237012799880176316946745 , 1 , 1.999431758531290848068806553783360868692 , -0.999432322291292307703258757101139053702,
+1 , -1.999999997687407882196453101641964167356 , 1 , 1.998629502305542704476692961179651319981 , -0.998630054680805900879647651890991255641
+};
+//IIR陷波器增益
+static float  ECG_Filter_butterworth_NotchInc = 
+                               0.999716023574382495198165088368114084005 *
+                               0.999314889824339025459210006374632939696 ;
 /*********************************************************************************************************
 *                                              内部函数声明
 *********************************************************************************************************/
@@ -97,15 +93,25 @@ void ECG_Filter_IIR(float* x)
 //  static double s_ECG_50Hz_arrPy[12] = {0};
   //x_temp=IIRFilterc((double*)&ECG_50Hz_NUM,(double*)&ECG_50Hz_DEN,ECG_50Hz_n,ECG_50Hz_ns,s_ECG_50Hz_arrPx,s_ECG_50Hz_arrPy,x_temp);
 //  *x = x_temp;
+    arm_biquad_cascade_df1_f32
+  (
+      &ECG_Filter_butterworth_inst,  // S：已初始化的实例
+      x,                              // pIn：输入数据
+      x,                              // pOut：输出数据
+      1                               // blockSize：单次处理32点
+  );
+
+  (*x) *= ECG_Filter_butterworth_NotchInc;
 
   arm_biquad_cascade_df1_f32
   (
       &ECG_Filter_chebyshev_ii_inst,  // S：已初始化的实例
-      x,   // pIn：输入数据
-      x,// pOut：输出数据
-      1               // blockSize：单次处理32点
+      x,                              // pIn：输入数据
+      x,                              // pOut：输出数据
+      1                               // blockSize：单次处理32点
   );
-  *x *= ECG_Filter_chebyshev_ii_NotchInc;
+  (*x) *= ECG_Filter_chebyshev_ii_NotchInc;
+  
 }
 
 /*********************************************************************************************************
@@ -207,8 +213,8 @@ void ECG_Filter(float* x)
   }
 }
 /*********************************************************************************************************
-* 函数名称: Init_ECG
-* 函数功能: 心电滤波任务主入口
+* 函数名称: InitFilter
+* 函数功能: 心电滤波任务初始化
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -217,11 +223,19 @@ void ECG_Filter(float* x)
 *********************************************************************************************************/
 void InitFilter()
 {
-  arm_biquad_cascade_df1_init_f32
+  arm_biquad_cascade_df1_init_f32//切比雪夫II
   (
     &ECG_Filter_chebyshev_ii_inst,  // S：实例地址
     ECG_Filter_chebyshev_ii_STAGES,               // numStages：2级（4阶）
-    (float32_t*)&ECG_Filter_chebyshev_ii_Coeffs[0],   // pCoeffs：带通系数
-    ecg_bp_state     // pState：状态缓存
+    (float32_t*)&ECG_Filter_chebyshev_ii_Coeffs,   // pCoeffs：带通系数
+    ECG_Filter_chebyshev_ii_state     // pState：状态缓存
+  );
+  
+  arm_biquad_cascade_df1_init_f32//巴特沃斯
+  (
+    &ECG_Filter_butterworth_inst,  // S：实例地址
+    ECG_Filter_butterworth_STAGES,               // numStages：2级（4阶）
+    (float32_t*)&ECG_Filter_butterworth_Coeffs,   // pCoeffs：带通系数
+    ECG_Filter_butterworth_state     // pState：状态缓存
   );
 }
