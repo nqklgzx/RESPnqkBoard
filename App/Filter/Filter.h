@@ -24,10 +24,17 @@
 *                                              宏定义
 *********************************************************************************************************/
 extern unsigned char ECG_Filter_Flag;    //默认IIR滤波
+#define EC_SmoothFILTER_WINDOW_SIZE 12 // 对应 MATLAB 中的 12
 
 /*********************************************************************************************************
 *                                              枚举结构体定义
 *********************************************************************************************************/
+//平滑滤波器
+typedef struct {
+    float buffer[EC_SmoothFILTER_WINDOW_SIZE]; // 历史数据缓冲
+    int head;                       // 当前写入位置索引
+    float sum;                        // 当前窗口内的累加和
+} ECG_Filter_Smooth;
 
 /*********************************************************************************************************
 *                                              外部变量声明
@@ -39,6 +46,8 @@ extern unsigned char ECG_Filter_Flag;    //默认IIR滤波
 //函数声明
 void ECG_Filter(float* x);
 void InitFilter(void);
+void ECG_Filter_Smooth_Init(ECG_Filter_Smooth *filter);
+float ECG_Filter_Smooth_Update(ECG_Filter_Smooth *filter, float newInput);
 
 
 #endif
