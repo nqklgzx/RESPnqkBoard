@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\STM32KeilPrj.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\STM32KeilPrj.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Jan 21 20:50:08 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Thu Jan 22 11:09:24 2026
 <BR><P>
 <H3>Maximum Stack Usage =        188 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -356,7 +356,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fadd
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ECG_HR_FindMid
+<BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ECG_HR_FindPeak
+<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ECG_HR_FindMid
 </UL>
 
 <P><STRONG><a name="[5d]"></a>__aeabi_frsub</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, fadd.o(.text), UNUSED)
@@ -735,12 +736,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ECG_HeartRate_Calculate
 </UL>
 
-<P><STRONG><a name="[b8]"></a>ECG_HR_FindPeak</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, ecg_heartrate_calculate.o(i.ECG_HR_FindPeak))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = ECG_HR_FindPeak &rArr; __aeabi_i2f &rArr; _float_epilogue
+<P><STRONG><a name="[b8]"></a>ECG_HR_FindPeak</STRONG> (Thumb, 140 bytes, Stack size 24 bytes, ecg_heartrate_calculate.o(i.ECG_HR_FindPeak))
+<BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = ECG_HR_FindPeak &rArr; __aeabi_fsub &rArr; __aeabi_fadd &rArr; _float_epilogue
 </UL>
 <BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2f
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cfrcmple
 <LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cfcmple
+<LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fsub
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ECG_HeartRate_Calculate
 </UL>

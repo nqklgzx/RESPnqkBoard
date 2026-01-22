@@ -52,7 +52,7 @@ const float32_t ECG_Filter_chebyshev_ii_Coeffs[5 * ECG_Filter_chebyshev_ii_STAGE
 //增益
 static float  ECG_Filter_chebyshev_ii_NotchInc = 0.008742140415356791302570194091003941139f * 0.008742140415356791302570194091003941139f; 
 
-//巴特沃斯滤波器
+//切比雪夫滤波器[low-0.6]
 static arm_biquad_casd_df1_inst_f32 ECG_Filter_butterworth_inst;
 const uint8_t ECG_Filter_butterworth_STAGES = 3;
 static float32_t ECG_Filter_butterworth_state[ECG_Filter_butterworth_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0

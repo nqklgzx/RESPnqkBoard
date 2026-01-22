@@ -26,6 +26,7 @@
 *********************************************************************************************************/
 #define ECG_Reference_Multiple 0.6
 #define ECG_Statistic_Num 240
+#define ECG_PeakGap 2600     //60÷最大呼吸率÷采样时间间隔
 /*********************************************************************************************************
 *                                              枚举结构体定义
 *********************************************************************************************************/
@@ -97,7 +98,10 @@ int ECG_HR_FindPeak(float ECG_Reference)
       {
         break;
       }
-      ECG_Peak_Index[ECG_PeakNum++] = i;
+      if(i-ECG_Peak_Index[ECG_PeakNum-1]>ECG_PeakGap)
+      {
+        ECG_Peak_Index[ECG_PeakNum++] = i;
+      }
     }
   }
   return ECG_PeakNum;
