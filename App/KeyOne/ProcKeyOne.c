@@ -20,8 +20,8 @@
 #include "ProcKeyOne.h"
 #include "UART1.h"
 #include "Filter.h"
-#include "ECG.h"
-#include "ECG_HeartRate_Calculate.h"
+#include "RESP.h"
+#include "RESP_HeartRate_Calculate.h"
 
 /*********************************************************************************************************
 *                                              ºê¶¨Òå
@@ -72,8 +72,8 @@ void InitProcKeyOne(void)
 void  ProcKeyDownKey1(void)
 {  
   //printf("KEY1 PUSH DOWN\r\n");  //´òÓ¡°´¼ü×´Ì¬
-  ECG_StartInfo_Change(1-ECG_StartInfo_Get());
-  printf("Change ECG_StartInfo:%c\n",ECG_StartInfo_Get());
+  RESP_StartInfo_Change(1-RESP_StartInfo_Get());
+  printf("Change RESP_StartInfo:%c\n",RESP_StartInfo_Get());
 }
 
 /*********************************************************************************************************
@@ -102,17 +102,17 @@ void  ProcKeyUpKey1(void)
 void  ProcKeyDownKey2(void)
 {
   //printf("KEY2 PUSH DOWN\r\n");   //´òÓ¡°´¼ü×´Ì¬
-  if(ECG_Filter_Flag == '0') 
+  if(RESP_Filter_Flag == '0') 
   {
-    ECG_Filter_Flag = '1';      
-    printf("[[4,%c]]\r\n",ECG_Filter_Flag); 
+    RESP_Filter_Flag = '1';      
+    printf("[[4,%c]]\r\n",RESP_Filter_Flag); 
   }
   else 
   {
-    ECG_Filter_Flag = '0';
-    printf("[[4,%c]]\r\n",ECG_Filter_Flag); 
+    RESP_Filter_Flag = '0';
+    printf("[[4,%c]]\r\n",RESP_Filter_Flag); 
   }
-  //printf("Change ECG_Filter_Flag:%c\n",ECG_Filter_Flag);
+  //printf("Change RESP_Filter_Flag:%c\n",RESP_Filter_Flag);
 }
 
 /*********************************************************************************************************
@@ -141,7 +141,7 @@ void  ProcKeyUpKey2(void)
 void  ProcKeyDownKey3(void)
 {
   //printf("KEY3 PUSH DOWN\r\n");   //´òÓ¡°´¼ü×´Ì¬
-  ECG_HR_Send();
+  RESP_HR_Send();
 }
 
 /*********************************************************************************************************

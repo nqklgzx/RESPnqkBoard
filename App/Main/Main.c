@@ -34,9 +34,9 @@
 #include "DAC.h"
 #include "SendDataToHost.h"
 #include "ADC.h"
-#include "ECG.h"
+#include "RESP.h"
 #include "Filter.h"
-#include "ECG_HeartRate_Calculate.h"
+#include "RESP_HeartRate_Calculate.h"
 
 /*********************************************************************************************************
 *                                              宏定义
@@ -94,13 +94,13 @@ static  void  InitHardware(void)
   InitNVIC();         //初始化NVIC模块
   InitUART1(115200);  //初始化UART模块
   InitTimer();        //初始化Timer模块
-  InitLED();          //初始化LED模块
+  //InitLED();          //初始化LED模块
   InitSysTick();      //初始化SysTick模块
   InitDAC();          //初始化DAC模块
   InitADC();          //初始化ADC模块
   InitProcKeyOne();
   InitKeyOne();
-  ECG_Init();   //初始化ECG模块
+  RESP_Init();   //初始化RESP模块
 }
 
 /*********************************************************************************************************
@@ -122,9 +122,9 @@ static  void  Proc2msTask(void)
     {       
       ProcHostCmd(uart1RecData);  //处理命令      
     }
-    ECG_Task();
+    RESP_Task();
        
-    LEDFlicker(250);//调用闪烁函数     
+    //LEDFlicker(250);//调用闪烁函数     
     ScanKeyTask();
     Clr2msFlag();   //清除2ms标志
   }

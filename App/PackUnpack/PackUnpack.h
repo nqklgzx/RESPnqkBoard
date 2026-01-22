@@ -43,7 +43,7 @@ typedef struct
 typedef enum
 {
   MODULE_SYS     = 0x01,  //系统信息
-  MODULE_ECG     = 0x10,  //心电信息
+  MODULE_ECG     = 0x10,  //呼吸信息
   MODULE_RESP    = 0x11,  //呼吸信息
   MODULE_TEMP    = 0x12,  //体温信息
   MODULE_SPO2    = 0x13,  //血氧信息
@@ -71,17 +71,17 @@ typedef enum
 //ECG模块的二级ID
 typedef enum 
 {
-  DAT_ECG_WAVE    = 0x02,         //心电波形数据
-  DAT_ECG_LEAD    = 0x03,         //心电导联信息
+  DAT_ECG_WAVE    = 0x02,         //呼吸波形数据
+  DAT_ECG_LEAD    = 0x03,         //呼吸导联信息
   DAT_ECG_HR      = 0x04,         //心率
   DAT_ST          = 0x05,         //ST值
   DAT_ST_PAT      = 0x06,         //ST模板波形
   
   CMD_LEAD_SYS    = 0x80,         //3/5导联设置
   CMD_LEAD_TYPE   = 0x81,         //导联方式设置
-  CMD_FILTER_MODE = 0x82,         //心电滤波方式设置
+  CMD_FILTER_MODE = 0x82,         //呼吸滤波方式设置
   CMD_ECG_GAIN    = 0x83,         //ECG增益设置
-  CMD_ECG_CAL     = 0x84,         //心电校准
+  CMD_ECG_CAL     = 0x84,         //呼吸校准
   CMD_ECG_TRA     = 0x85,         //工频干扰抑制开关
   CMD_ECG_PACE    = 0x86,         //起搏分析开关
   CMD_ECG_ST_ISO  = 0x87,         //ST测量ISO、ST点

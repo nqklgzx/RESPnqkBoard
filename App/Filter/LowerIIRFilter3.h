@@ -19,8 +19,8 @@
  * D:\Tools\MATLAB\R2024b\extern\include\tmwtypes.h 
  */
 #define MWSPT_NSEC 3
-const int ECG_Lower_NL[MWSPT_NSEC] = { 1,3,1 };
-const double ECG_Lower_NUM[MWSPT_NSEC][3] = {
+const int RESP_Lower_NL[MWSPT_NSEC] = { 1,3,1 };
+const double RESP_Lower_NUM[MWSPT_NSEC][3] = {
   {
      0.1075169803738,                 0,                 0 
   },
@@ -31,8 +31,8 @@ const double ECG_Lower_NUM[MWSPT_NSEC][3] = {
      0.8912509381337,                 0,                 0 
   }
 };
-const int ECG_Lower_DL[MWSPT_NSEC] = { 1,3,1 };
-const double ECG_Lower_DEN[MWSPT_NSEC][3] = {
+const int RESP_Lower_DL[MWSPT_NSEC] = { 1,3,1 };
+const double RESP_Lower_DEN[MWSPT_NSEC][3] = {
   {
                    1,                 0,                 0 
   },

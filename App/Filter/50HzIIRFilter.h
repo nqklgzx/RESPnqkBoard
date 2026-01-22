@@ -19,11 +19,11 @@
  * Expected path to tmwtypes.h 
  * D:\Tools\MATLAB\R2024b\extern\include\tmwtypes.h 
  */
-const int ECG_50Hz_NL = 3;
-const double ECG_50Hz_NUM[3] = {
+const int RESP_50Hz_NL = 3;
+const double RESP_50Hz_NUM[3] = {
      0.9115207056625,   -1.474871483211,   0.9115207056625
 };
-const int ECG_50Hz_DL = 3;
-const double ECG_50Hz_DEN[3] = {
+const int RESP_50Hz_DL = 3;
+const double RESP_50Hz_DEN[3] = {
                    1,   -1.474871483211,   0.8230414113249
 };

@@ -34,6 +34,6 @@
 .\objects\main.o: ..\HW\DAC\DAC.h
 .\objects\main.o: ..\App\SendDataToHost\SendDataToHost.h
 .\objects\main.o: ..\HW\ADC\ADC.h
-.\objects\main.o: ..\App\ECG\ECG.h
+.\objects\main.o: ..\App\RESP\RESP.h
 .\objects\main.o: ..\App\Filter\Filter.h
-.\objects\main.o: ..\App\ECG_HeartRate_Calculate\ECG_HeartRate_Calculate.h
+.\objects\main.o: ..\App\RESP_HeartRate_Calculate\RESP_HeartRate_Calculate.h

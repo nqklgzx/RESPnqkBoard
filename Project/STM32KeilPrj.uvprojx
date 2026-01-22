@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER,ARM_MATH_CM3</Define>
               <Undefine></Undefine>
-              <IncludePath>..\App\Main;..\App\DataType;..\HW\RCC;..\HW\Timer;..\HW\UART1;..\FW\inc;..\ARM\NVIC;..\ARM\SysTick;..\ARM\System;..\App\LED;..\APP\PackUnpack;..\APP\ProcHostCmd;..\HW\DAC;..\HW\ADC;..\App\SendDataToHost;..\App\ECG;..\App\Filter;..\App\ECG_HeartRate_Calculate;..\ARM\DSPlib\Include;..\App\KeyOne</IncludePath>
+              <IncludePath>..\App\Main;..\App\DataType;..\HW\RCC;..\HW\Timer;..\HW\UART1;..\FW\inc;..\ARM\NVIC;..\ARM\SysTick;..\ARM\System;..\App\LED;..\APP\PackUnpack;..\APP\ProcHostCmd;..\HW\DAC;..\HW\ADC;..\App\SendDataToHost;..\App\RESP_HeartRate_Calculate;..\App\Filter;..\App\RESP;..\ARM\DSPlib\Include;..\App\KeyOne</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -409,19 +409,9 @@
               <FilePath>..\App\SendDataToHost\SendDataToHost.c</FilePath>
             </File>
             <File>
-              <FileName>ECG.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\App\ECG\ECG.c</FilePath>
-            </File>
-            <File>
               <FileName>Filter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\Filter\Filter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ECG_HeartRate_Calculate.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\App\ECG_HeartRate_Calculate\ECG_HeartRate_Calculate.c</FilePath>
             </File>
             <File>
               <FileName>ProcKeyOne.c</FileName>
@@ -432,6 +422,16 @@
               <FileName>KeyOne.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\KeyOne\KeyOne.c</FilePath>
+            </File>
+            <File>
+              <FileName>RESP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\RESP\RESP.c</FilePath>
+            </File>
+            <File>
+              <FileName>RESP_HeartRate_Calculate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\RESP_HeartRate_Calculate\RESP_HeartRate_Calculate.c</FilePath>
             </File>
           </Files>
         </Group>

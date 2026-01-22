@@ -36,33 +36,33 @@
 /*********************************************************************************************************
 *                                              枚举结构体定义
 *********************************************************************************************************/
-ECG_Filter_Smooth respFilter;
+RESP_Filter_Smooth respFilter;
 /*********************************************************************************************************
 *                                              内部变量
 *********************************************************************************************************/
-u8 ECG_Filter_Flag='1';    //默认有滤波
+u8 RESP_Filter_Flag='1';    //默认有滤波
 //切比雪夫滤波器[0.1-1]
-static arm_biquad_casd_df1_inst_f32 ECG_Filter_chebyshev_ii_inst;
-const uint8_t ECG_Filter_chebyshev_ii_STAGES = 2;
-static float32_t ECG_Filter_chebyshev_ii_state[ECG_Filter_chebyshev_ii_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
-const float32_t ECG_Filter_chebyshev_ii_Coeffs[5 * ECG_Filter_chebyshev_ii_STAGES] = {  // 2级滤波器，每级5个系数
+static arm_biquad_casd_df1_inst_f32 RESP_Filter_chebyshev_ii_inst;
+const uint8_t RESP_Filter_chebyshev_ii_STAGES = 2;
+static float32_t RESP_Filter_chebyshev_ii_state[RESP_Filter_chebyshev_ii_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
+const float32_t RESP_Filter_chebyshev_ii_Coeffs[5 * RESP_Filter_chebyshev_ii_STAGES] = {  // 2级滤波器，每级5个系数
 1 , 0 , -1 , 1.976815306010364592381733928050380200148 , -0.977126517775271152821403575217118486762,
 1 , 0 , -1 , 1.998258728739039646882247325265780091286 , -0.998260509412088437031229659623932093382
 };
 //增益
-static float  ECG_Filter_chebyshev_ii_NotchInc = 0.008742140415356791302570194091003941139f * 0.008742140415356791302570194091003941139f; 
+static float  RESP_Filter_chebyshev_ii_NotchInc = 0.008742140415356791302570194091003941139f * 0.008742140415356791302570194091003941139f; 
 
 //切比雪夫滤波器[low-0.6]
-static arm_biquad_casd_df1_inst_f32 ECG_Filter_butterworth_inst;
-const uint8_t ECG_Filter_butterworth_STAGES = 3;
-static float32_t ECG_Filter_butterworth_state[ECG_Filter_butterworth_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
-const float32_t ECG_Filter_butterworth_Coeffs[5 * ECG_Filter_butterworth_STAGES] = {  // 2级滤波器，每级5个系数
+static arm_biquad_casd_df1_inst_f32 RESP_Filter_butterworth_inst;
+const uint8_t RESP_Filter_butterworth_STAGES = 3;
+static float32_t RESP_Filter_butterworth_state[RESP_Filter_butterworth_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
+const float32_t RESP_Filter_butterworth_Coeffs[5 * RESP_Filter_butterworth_STAGES] = {  // 2级滤波器，每级5个系数
 1 , -1.999830751345114121519941363658290356398 , 1 , 1.996621181865077421235810106736607849598 , -0.996690812422109884138876623183023184538,
 1 , -1.99968418928280788904316978005226701498 , 1 , 1.988779316180262712876469777256716042757 , -0.988865074649875941403820434061344712973,
 1 , -1.997643959140362968085469219658989459276 , 1 , 1.980053972568120324027063361427281051874 , -0.980165799301830786838252151937922462821
 };
 //增益
-static float  ECG_Filter_butterworth_NotchInc = 
+static float  RESP_Filter_butterworth_NotchInc = 
                                0.411409810490829808138357748248381540179 *
                                0.271550219623815536351685295812785625458 *
                                0.047463834616020848800044262816300033592 ;
@@ -70,15 +70,15 @@ static float  ECG_Filter_butterworth_NotchInc =
 /*********************************************************************************************************
 *                                              内部函数声明
 *********************************************************************************************************/
-void ECG_Filter_IIR(float* x);               //滤波
+void RESP_Filter_IIR(float* x);               //滤波
 double  IIRFilterc(const double* b, const double* a, int n, int ns, double* px, double* py, double x);
 void BaselineFilterTask(float *dataAddr);                  
 /*********************************************************************************************************
 *                                              内部函数实现
 *********************************************************************************************************/
 /*********************************************************************************************************
-* 函数名称: ECG_Filter_IIR
-* 函数功能: 心电IIR滤波
+* 函数名称: RESP_Filter_IIR
+* 函数功能: 呼吸IIR滤波
 * 输入参数: double* x ：输入数据的地址
             int N ：数据个数
 * 输出参数: void
@@ -86,35 +86,35 @@ void BaselineFilterTask(float *dataAddr);
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-void ECG_Filter_IIR(float* x)
+void RESP_Filter_IIR(float* x)
 {
 //  double x_temp = *x;
   
   // 初始化各节的缓存（px和py初始化为0）：50Hz陷波器
-//  int ECG_50Hz_n = 2;                  // 每节阶数
-//  int ECG_50Hz_ns = 1;        // 总节数
-//  static double s_ECG_50Hz_arrPx[12] = {0};
-//  static double s_ECG_50Hz_arrPy[12] = {0};
-  //x_temp=IIRFilterc((double*)&ECG_50Hz_NUM,(double*)&ECG_50Hz_DEN,ECG_50Hz_n,ECG_50Hz_ns,s_ECG_50Hz_arrPx,s_ECG_50Hz_arrPy,x_temp);
+//  int RESP_50Hz_n = 2;                  // 每节阶数
+//  int RESP_50Hz_ns = 1;        // 总节数
+//  static double s_RESP_50Hz_arrPx[12] = {0};
+//  static double s_RESP_50Hz_arrPy[12] = {0};
+  //x_temp=IIRFilterc((double*)&RESP_50Hz_NUM,(double*)&RESP_50Hz_DEN,RESP_50Hz_n,RESP_50Hz_ns,s_RESP_50Hz_arrPx,s_RESP_50Hz_arrPy,x_temp);
 //  *x = x_temp;
     arm_biquad_cascade_df1_f32
   (
-      &ECG_Filter_butterworth_inst,  // S：已初始化的实例
+      &RESP_Filter_butterworth_inst,  // S：已初始化的实例
       x,                              // pIn：输入数据
       x,                              // pOut：输出数据
       1                               // blockSize：单次处理32点
   );
 
-  (*x) *= ECG_Filter_butterworth_NotchInc;
+  (*x) *= RESP_Filter_butterworth_NotchInc;
 
   arm_biquad_cascade_df1_f32
   (
-      &ECG_Filter_chebyshev_ii_inst,  // S：已初始化的实例
+      &RESP_Filter_chebyshev_ii_inst,  // S：已初始化的实例
       x,                              // pIn：输入数据
       x,                              // pOut：输出数据
       1                               // blockSize：单次处理32点
   );
-  (*x) *= ECG_Filter_chebyshev_ii_NotchInc;
+  (*x) *= RESP_Filter_chebyshev_ii_NotchInc;
   
 }
 
@@ -198,7 +198,7 @@ void BaselineFilterTask(float *dataAddr)
 * 创建日期：2024年01月22日
 * 注  意：  采用IIR型滤波器
 **********************************************************************************************************/
-void ECG_Filter_Smooth_Init(ECG_Filter_Smooth *filter) 
+void RESP_Filter_Smooth_Init(RESP_Filter_Smooth *filter) 
 {
   int i = 0;
   for (i = 0; i < EC_SmoothFILTER_WINDOW_SIZE; i++) 
@@ -217,7 +217,7 @@ void ECG_Filter_Smooth_Init(ECG_Filter_Smooth *filter)
 * 创建日期：2024年01月22日
 * 注  意：  采用IIR型滤波器
 **********************************************************************************************************/
-float Filter_Update(ECG_Filter_Smooth *filter, float newInput) {
+float Filter_Update(RESP_Filter_Smooth *filter, float newInput) {
     // 1. 从总和中减去最老的一个数据（即将被覆盖的数据）
     filter->sum -= filter->buffer[filter->head];
 
@@ -241,22 +241,22 @@ float Filter_Update(ECG_Filter_Smooth *filter, float newInput) {
 *                                              API函数实现
 *********************************************************************************************************/
 /*********************************************************************************************************
-* 函数名称: ECG_Filter
-* 函数功能: 心电滤波任务主入口
+* 函数名称: RESP_Filter
+* 函数功能: 呼吸滤波任务主入口
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-void ECG_Filter(float* x)
+void RESP_Filter(float* x)
 {
-  switch(ECG_Filter_Flag)
+  switch(RESP_Filter_Flag)
   {
     case '0':
       break;
     case '1':
-      ECG_Filter_IIR(x);
+      RESP_Filter_IIR(x);
       //*x = Filter_Update(&respFilter, *x);
       break;
     default:
@@ -266,7 +266,7 @@ void ECG_Filter(float* x)
 }
 /*********************************************************************************************************
 * 函数名称: InitFilter
-* 函数功能: 心电滤波任务初始化
+* 函数功能: 呼吸滤波任务初始化
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -277,19 +277,19 @@ void InitFilter()
 {
   arm_biquad_cascade_df1_init_f32//切比雪夫II
   (
-    &ECG_Filter_chebyshev_ii_inst,  // S：实例地址
-    ECG_Filter_chebyshev_ii_STAGES,               // numStages：2级（4阶）
-    (float32_t*)&ECG_Filter_chebyshev_ii_Coeffs,   // pCoeffs：带通系数
-    ECG_Filter_chebyshev_ii_state     // pState：状态缓存
+    &RESP_Filter_chebyshev_ii_inst,  // S：实例地址
+    RESP_Filter_chebyshev_ii_STAGES,               // numStages：2级（4阶）
+    (float32_t*)&RESP_Filter_chebyshev_ii_Coeffs,   // pCoeffs：带通系数
+    RESP_Filter_chebyshev_ii_state     // pState：状态缓存
   );
   
   arm_biquad_cascade_df1_init_f32//巴特沃斯
   (
-    &ECG_Filter_butterworth_inst,  // S：实例地址
-    ECG_Filter_butterworth_STAGES,               // numStages：2级（4阶）
-    (float32_t*)&ECG_Filter_butterworth_Coeffs,   // pCoeffs：带通系数
-    ECG_Filter_butterworth_state     // pState：状态缓存
+    &RESP_Filter_butterworth_inst,  // S：实例地址
+    RESP_Filter_butterworth_STAGES,               // numStages：2级（4阶）
+    (float32_t*)&RESP_Filter_butterworth_Coeffs,   // pCoeffs：带通系数
+    RESP_Filter_butterworth_state     // pState：状态缓存
   );
   
-  ECG_Filter_Smooth_Init(&respFilter);
+  RESP_Filter_Smooth_Init(&respFilter);
 }

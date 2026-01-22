@@ -17,16 +17,16 @@
 /*********************************************************************************************************
 *                                              包含头文件
 *********************************************************************************************************/
-#include "ECG_HeartRate_Calculate.h"
-#include "ECG.h"
+#include "RESP_HeartRate_Calculate.h"
+#include "RESP.h"
 #include "UART1.h"
 
 /*********************************************************************************************************
 *                                              宏定义
 *********************************************************************************************************/
-#define ECG_Reference_Multiple 0.6
-#define ECG_Statistic_Num 240
-#define ECG_PeakGap 2600     //60÷最大呼吸率÷采样时间间隔
+#define RESP_Reference_Multiple 0.6
+#define RESP_Statistic_Num 240
+#define RESP_PeakGap 2600     //60÷最大呼吸率÷采样时间间隔
 /*********************************************************************************************************
 *                                              枚举结构体定义
 *********************************************************************************************************/
@@ -34,173 +34,173 @@
 /*********************************************************************************************************
 *                                              内部变量
 *********************************************************************************************************/
-static float ECG_Peak_Index[ECG_Statistic_Num]={0};
-static float ECG_Peak_TM_DIffer[ECG_Statistic_Num]={0};
-static float ECG_HeartRate = 0;
+static float RESP_Peak_Index[RESP_Statistic_Num]={0};
+static float RESP_Peak_TM_DIffer[RESP_Statistic_Num]={0};
+static float RESP_HeartRate = 0;
 
 /*********************************************************************************************************
 *                                              内部函数声明
 *********************************************************************************************************/
-float ECG_HR_FindReference(void);
-int ECG_HR_FindPeak(float ECG_Reference);
-int ECG_HR_AverageTime(int ECG_PeakNum);
-void ECG_HR_Cal(float ECG_HR_TM_Mid);
+float RESP_HR_FindReference(void);
+int RESP_HR_FindPeak(float RESP_Reference);
+int RESP_HR_AverageTime(int RESP_PeakNum);
+void RESP_HR_Cal(float RESP_HR_TM_Mid);
 float GetMidValue1(float* data,unsigned short len);
-float ECG_HR_FindMid(int ECG_PeakNum);
+float RESP_HR_FindMid(int RESP_PeakNum);
 
 /*********************************************************************************************************
 *                                              内部函数实现
 *********************************************************************************************************/
 /*********************************************************************************************************
-* 函数名称: ECG_HR_FindReference
-* 函数功能: 心率最大值查找参考值
+* 函数名称: RESP_HR_FindReference
+* 函数功能: 呼吸率最大值查找参考值
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-float ECG_HR_FindReference()
+float RESP_HR_FindReference()
 { 
-  float Maximum = ECG_WaveData[0];
-  float ECG_Reference=0;
+  float Maximum = RESP_WaveData[0];
+  float RESP_Reference=0;
   int i = 0;
-  for(i = 0;i < ECG_ADC_arrMAX ; i++)
+  for(i = 0;i < RESP_ADC_arrMAX ; i++)
   {
-    if(ECG_WaveData[i] > Maximum)
+    if(RESP_WaveData[i] > Maximum)
     {
-      Maximum = ECG_WaveData[i];
+      Maximum = RESP_WaveData[i];
     }
   }
-  ECG_Reference = Maximum * ECG_Reference_Multiple;
-  return ECG_Reference;
+  RESP_Reference = Maximum * RESP_Reference_Multiple;
+  return RESP_Reference;
 }
 /*********************************************************************************************************
-* 函数名称: ECG_HR_FindMAX
-* 函数功能: 心电心率查找最大值
+* 函数名称: RESP_HR_FindMAX
+* 函数功能: 呼吸率查找最大值
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-int ECG_HR_FindPeak(float ECG_Reference)
+int RESP_HR_FindPeak(float RESP_Reference)
 {
-  int ECG_PeakNum = 0;
+  int RESP_PeakNum = 0;
   int i = 0;
-  for(i = 0;i < ECG_ADC_arrMAX - 1 ; i++)
+  for(i = 0;i < RESP_ADC_arrMAX - 1 ; i++)
   {
-    if(ECG_WaveData[i] >= ECG_Reference &&  // 超过阈值
-     ECG_WaveData[i] > ECG_WaveData[i-1] &&  // 比前一点大
-     ECG_WaveData[i] > ECG_WaveData[i+1])
+    if(RESP_WaveData[i] >= RESP_Reference &&  // 超过阈值
+     RESP_WaveData[i] > RESP_WaveData[i-1] &&  // 比前一点大
+     RESP_WaveData[i] > RESP_WaveData[i+1])
     {
-      if(ECG_PeakNum >= ECG_Statistic_Num)
+      if(RESP_PeakNum >= RESP_Statistic_Num)
       {
         break;
       }
-      if(i-ECG_Peak_Index[ECG_PeakNum-1]>ECG_PeakGap)
+      if(i-RESP_Peak_Index[RESP_PeakNum-1]>RESP_PeakGap)
       {
-        ECG_Peak_Index[ECG_PeakNum++] = i;
+        RESP_Peak_Index[RESP_PeakNum++] = i;
       }
     }
   }
-  return ECG_PeakNum;
+  return RESP_PeakNum;
 }
 
 /*********************************************************************************************************
-* 函数名称: ECG_HR_Send
-* 函数功能: 心电心率计算
+* 函数名称: RESP_HR_Send
+* 函数功能: 呼吸率计算
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-float ECG_HR_FindMid(int ECG_PeakNum)
+float RESP_HR_FindMid(int RESP_PeakNum)
 {
-  float ECG_HR_TM_Mid = 0;
-  int ECG_Peak_TM_DIffer_Count = ECG_PeakNum - 1;
+  float RESP_HR_TM_Mid = 0;
+  int RESP_Peak_TM_DIffer_Count = RESP_PeakNum - 1;
   int i = 0,j = 0,k = 0,temp = 0;
-  for(i = 0;i < ECG_PeakNum - 1 ; i++)        //由于两两相减，ECG_PeakNum必须-1
+  for(i = 0;i < RESP_PeakNum - 1 ; i++)        //由于两两相减，RESP_PeakNum必须-1
   {
-    ECG_Peak_TM_DIffer[i] = ECG_Peak_Index[i+1] - ECG_Peak_Index[i];
+    RESP_Peak_TM_DIffer[i] = RESP_Peak_Index[i+1] - RESP_Peak_Index[i];
   }
   
-  for(j = 0;j < ECG_Peak_TM_DIffer_Count-1;j++)
+  for(j = 0;j < RESP_Peak_TM_DIffer_Count-1;j++)
   {
-    for(k = 0;k < ECG_Peak_TM_DIffer_Count - 1 - j;k++)
+    for(k = 0;k < RESP_Peak_TM_DIffer_Count - 1 - j;k++)
     {
-    if (ECG_Peak_TM_DIffer[j] > ECG_Peak_TM_DIffer[j+1])//这是升序排法，前一个数和后一个数比较，如果前数大则与后一个数换位置
+    if (RESP_Peak_TM_DIffer[j] > RESP_Peak_TM_DIffer[j+1])//这是升序排法，前一个数和后一个数比较，如果前数大则与后一个数换位置
      {
-        temp = ECG_Peak_TM_DIffer[j];
-        ECG_Peak_TM_DIffer[j] = ECG_Peak_TM_DIffer[j+1];
-        ECG_Peak_TM_DIffer[j+1] = temp;
+        temp = RESP_Peak_TM_DIffer[j];
+        RESP_Peak_TM_DIffer[j] = RESP_Peak_TM_DIffer[j+1];
+        RESP_Peak_TM_DIffer[j+1] = temp;
 		 }
     }
   }
 	//获取中值
-  if(ECG_Peak_TM_DIffer_Count%2==0)
+  if(RESP_Peak_TM_DIffer_Count%2==0)
   {
-    ECG_HR_TM_Mid = ECG_Peak_TM_DIffer[ECG_Peak_TM_DIffer_Count/2];
+    RESP_HR_TM_Mid = RESP_Peak_TM_DIffer[RESP_Peak_TM_DIffer_Count/2];
   }
   else
   {
-    ECG_HR_TM_Mid=(ECG_Peak_TM_DIffer[ECG_Peak_TM_DIffer_Count/2] + ECG_Peak_TM_DIffer[ECG_Peak_TM_DIffer_Count/2+1])/2;
+    RESP_HR_TM_Mid=(RESP_Peak_TM_DIffer[RESP_Peak_TM_DIffer_Count/2] + RESP_Peak_TM_DIffer[RESP_Peak_TM_DIffer_Count/2+1])/2;
   }
-  return ECG_HR_TM_Mid;
+  return RESP_HR_TM_Mid;
 }
 /*********************************************************************************************************
-* 函数名称: ECG_HR_Cal
-* 函数功能: 心电心率计算
+* 函数名称: RESP_HR_Cal
+* 函数功能: 呼吸率计算
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-void ECG_HR_Cal(float ECG_HR_TM_Mid)
+void RESP_HR_Cal(float RESP_HR_TM_Mid)
 {
-  ECG_HeartRate = 60.0 / (ECG_HR_TM_Mid * (0.002 * ECG_ADC_TM));
+  RESP_HeartRate = 60.0 / (RESP_HR_TM_Mid * (0.002 * RESP_ADC_TM));
 }
 
 /*********************************************************************************************************
 *                                              API函数实现
 *********************************************************************************************************/
 /*********************************************************************************************************
-* 函数名称: ECG_HeartRate_Calculate
-* 函数功能: 心电心率计算入口
+* 函数名称: RESP_HeartRate_Calculate
+* 函数功能: 呼吸率计算入口
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-void ECG_HeartRate_Calculate()
+void RESP_HeartRate_Calculate()
 {
-  double ECG_Reference = 0;
-  int ECG_PeakNum = 0;
-  float ECG_HR_TM_Mid = 0;
-  ECG_Reference = ECG_HR_FindReference();
-  ECG_PeakNum = ECG_HR_FindPeak(ECG_Reference);
-  ECG_HR_TM_Mid = ECG_HR_FindMid(ECG_PeakNum);
-  ECG_HR_Cal(ECG_HR_TM_Mid);
-  ECG_HR_Send();
+  double RESP_Reference = 0;
+  int RESP_PeakNum = 0;
+  float RESP_HR_TM_Mid = 0;
+  RESP_Reference = RESP_HR_FindReference();
+  RESP_PeakNum = RESP_HR_FindPeak(RESP_Reference);
+  RESP_HR_TM_Mid = RESP_HR_FindMid(RESP_PeakNum);
+  RESP_HR_Cal(RESP_HR_TM_Mid);
+  RESP_HR_Send();
 }
 
 /*********************************************************************************************************
-* 函数名称: ECG_HR_Send
-* 函数功能: 心电心率计算
+* 函数名称: RESP_HR_Send
+* 函数功能: 呼吸心率计算
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-void ECG_HR_Send()
+void RESP_HR_Send()
 
 {
-  //printf("INFO:ECG_HeartRate:%lf",ECG_HeartRate);
-  printf("[[2,%f]]\r\n",ECG_HeartRate); //设置测量结果显示
+  //printf("INFO:RESP_HeartRate:%lf",RESP_HeartRate);
+  printf("[[2,%f]]\r\n",RESP_HeartRate); //设置测量结果显示
   
 }
 

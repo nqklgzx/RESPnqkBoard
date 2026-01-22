@@ -13,8 +13,8 @@
 * 修改内容:
 * 修改文件:
 *********************************************************************************************************/
-#ifndef ECG_HEARTRATE_CALCULATE_H
-#define ECG_HEARTRATE_CALCULATE_H
+#ifndef RESP_HEARTRATE_CALCULATE_H
+#define RESP_HEARTRATE_CALCULATE_H
 
 /*********************************************************************************************************
 *                                              包含头文件
@@ -36,8 +36,8 @@
 *                                              API函数声明
 *********************************************************************************************************/
 //函数声明
-void ECG_HeartRate_Calculate(void);      //计算心率
-void ECG_HR_Send(void);
+void RESP_HeartRate_Calculate(void);      //计算心率
+void RESP_HR_Send(void);
 
 
 #endif

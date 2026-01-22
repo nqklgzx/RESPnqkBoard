@@ -65,7 +65,7 @@ static void ConfigADC1(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC , ENABLE);  //使能GPIOC的时钟
  
   //配置ADC1的GPIO
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_4;    //设置引脚
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_5;    //设置引脚
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN; //设置输入类型
   GPIO_Init(GPIOC, &GPIO_InitStructure);  //根据参数初始化GPIO
 
@@ -78,7 +78,7 @@ static void ConfigADC1(void)
   ADC_InitStructure.ADC_NbrOfChannel       = 1; //设置ADC的通道数目
   ADC_Init(ADC1, &ADC_InitStructure);
 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_239Cycles5); //设置采样时间为239.5个周期
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_239Cycles5); //设置采样时间为239.5个周期
 
   ADC_DMACmd(ADC1, ENABLE);                   //使能ADC1的DMA
   ADC_ExternalTrigConvCmd(ADC1, ENABLE);      //使用外部事件启动ADC转换
